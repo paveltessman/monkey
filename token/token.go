@@ -1,6 +1,6 @@
 package token
 
-type TokenType string
+type Type string
 
 const (
 	ILLEGAL = "ILLEGAL"
@@ -25,6 +25,18 @@ const (
 )
 
 type Token struct {
-	Type    TokenType
+	Type    Type
 	Literal string
+}
+
+var keywords = map[string]Type{
+	"fn":  FUNCTION,
+	"let": LET,
+}
+
+func LookupIdent(literal string) Type {
+	if tok, ok := keywords[literal]; ok {
+		return tok
+	}
+	return IDENT
 }
