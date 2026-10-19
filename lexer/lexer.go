@@ -24,7 +24,15 @@ func (lexer *Lexer) NextToken() token.Token {
 
 	case '=':
 
-		tok = newToken(token.ASSIGN, lexer.ch)
+		if lexer.peekChar() == '=' {
+
+			ch := lexer.ch
+			lexer.readChar()
+			tok = token.Token{Type: token.EQ, Literal: string(ch) + string(lexer.ch)}
+
+		} else {
+			tok = newToken(token.ASSIGN, lexer.ch)
+		}
 
 	case ';':
 
@@ -44,7 +52,15 @@ func (lexer *Lexer) NextToken() token.Token {
 
 	case '!':
 
-		tok = newToken(token.BANG, lexer.ch)
+		if lexer.peekChar() == '=' {
+
+			ch := lexer.ch
+			lexer.readChar()
+			tok = token.Token{Type: token.NOT_EQ, Literal: string(ch) + string(lexer.ch)}
+
+		} else {
+			tok = newToken(token.BANG, lexer.ch)
+		}
 
 	case '/':
 
@@ -136,6 +152,13 @@ func (lexer *Lexer) readNumber() string {
 		lexer.readChar()
 	}
 	return lexer.input[start:lexer.position]
+}
+
+func (lexer *Lexer) peekChar() byte {
+	if lexer.readPosition >= len(lexer.input) {
+		return 0
+	}
+	return lexer.input[lexer.readPosition]
 }
 
 func isLetter(ch byte) bool {
